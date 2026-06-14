@@ -54,7 +54,7 @@ func main() {
 		}
 
 		for i, repo := range repos {
-			fmt.Printf("%d. %s\n   URL: %s\n   Desc: %s\n\n", page*100+i+1, repo.Name, repo.HTMLURL, repo.Description)
+			fmt.Printf("%d. %s\n   URL: %s\n   Desc: %s\n\n", (page-1)*100+i+1, repo.Name, repo.HTMLURL, repo.Description)
 			cmd := exec.Command("git", "clone", fmt.Sprintf("https://github.com/pointlander/%s.git", repo.Name))
 			cmd.Stdout = os.Stdout
 			cmd.Stderr = os.Stderr
