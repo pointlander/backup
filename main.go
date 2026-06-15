@@ -55,10 +55,27 @@ func main() {
 
 		for i, repo := range repos {
 			fmt.Printf("%d. %s\n   URL: %s\n   Desc: %s\n\n", (page-1)*100+i+1, repo.Name, repo.HTMLURL, repo.Description)
+			wd, err := os.Getwd()
+			if err != nil {
+				panic(err)
+			}
+			name := wd + "/" + repo.Name
+			_, err = os.Stat(name)
+			if err == nil {
+				cmd := exec.Command("git", "pull")
+				cmd.Dir = name
+				cmd.Stdout = os.Stdout
+				cmd.Stderr = os.Stderr
+				err = cmd.Run()
+				if err != nil {
+					panic(fmt.Errorf("Error pulling repository: %v\n", err))
+				}
+				continue
+			}
 			cmd := exec.Command("git", "clone", fmt.Sprintf("https://github.com/pointlander/%s.git", repo.Name))
 			cmd.Stdout = os.Stdout
 			cmd.Stderr = os.Stderr
-			err := cmd.Run()
+			err = cmd.Run()
 			if err != nil {
 				panic(fmt.Errorf("Error cloning repository: %v\n", err))
 			}
